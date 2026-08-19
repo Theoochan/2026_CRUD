@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Hamcrest\StringDescription;
 use Illuminate\Http\Request;
 use App\Models\Categoria;
 
@@ -34,6 +35,33 @@ class CategoriaController extends Controller
     public function edit(string $id){
 
         $categoria = Categoria::findOrFail($id);
+        return view('categorias.edit', compact('categoria'));
         
+    }
+
+    public function update(Request $request, string $id){
+        $request->validate([
+            'nome' => 'required|max:255'
+        ]);
+
+        $categoria = Categoria::findOrFail($id);
+        $categoria->update($request->all());
+
+        return redirect()->route('categorias.index')
+            ->with('success', 'Categoria atualizada com sucesso');
+    }
+
+    public function destroy(string $id){
+
+        $categoria = Categoria::findOrFail($id);
+        $categoria->delete();
+
+        return redirect()->route('categorias.index')
+            ->with('success', 'Categoria excluida com sucesso');
+    }
+
+    public function show(string $id){
+        $categoria = Categoria::findOrFail($id);
+        return view('categorias.show', compact('categoria'));
     }
 }
